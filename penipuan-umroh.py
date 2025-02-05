@@ -3,6 +3,7 @@
 import threading
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,14 +12,16 @@ MAX_CONCURRENT_SESSIONS = 20
 semaphore = threading.Semaphore(MAX_CONCURRENT_SESSIONS)
 
 def submit_form_in_session(session_id, url):
-
     chrome_options = Options()
     chrome_options.add_argument('--headless')  # Run in headless mode
     chrome_options.add_argument('--disable-gpu')  # Disable GPU acceleration
 
     # Specify the path to chromedriver manually
-    driver_path = '/usr/bin/chromedriver'  # Update this if needed
-    driver = webdriver.Chrome(executable_path=driver_path, options=chrome_options)
+    driver_path = '/usr/lib/chromium-browser/chromedriver'  # Update this if needed
+    service = Service(driver_path)  # Use Service to specify the chromedriver
+
+    # Initialize the driver with the Service object
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
     try:
         driver.get(url)
