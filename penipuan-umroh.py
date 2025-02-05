@@ -21,7 +21,7 @@ def submit_form_in_session(session_id, url):
     try:
         driver.get(url)
 
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 30)
 
         name_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[placeholder="Nama lengkap sesuai KTP"]')))
         phone_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[placeholder="812345*****"]')))
