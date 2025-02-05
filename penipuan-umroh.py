@@ -17,8 +17,8 @@ def submit_form_in_session(session_id, url):
     chrome_options.add_argument('--headless')  # Run in headless mode
     chrome_options.add_argument('--disable-gpu')  # Disable GPU acceleration
 
-    # Create a temporary directory for user data
-    user_data_dir = tempfile.mkdtemp()  # Create a temporary directory for each session
+    # Create a unique temporary directory for user data by appending session_id
+    user_data_dir = tempfile.mkdtemp(prefix=f"user_data_{session_id}_")  # Unique directory for each session
     chrome_options.add_argument(f'--user-data-dir={user_data_dir}')
 
     # Specify the path to chromedriver manually
