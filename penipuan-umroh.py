@@ -7,6 +7,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import tempfile
+import os
 
 MAX_CONCURRENT_SESSIONS = 20
 semaphore = threading.Semaphore(MAX_CONCURRENT_SESSIONS)
@@ -16,12 +18,25 @@ def submit_form_in_session(session_id, url):
     chrome_options.add_argument('--headless')  # Run in headless mode
     chrome_options.add_argument('--disable-gpu')  # Disable GPU acceleration
 
+    # Create a temporary directory for user data
+    user_data_dir = tempfile.mkdtemp()  # Create a temporary directory for each session
+    chrome_options.add_argument(f'--user-data-dir={user_data_dir}')
+
     # Specify the path to chromedriver manually
     driver_path = '/usr/lib/chromium-browser/chromedriver'  # Update this if needed
     service = Service(driver_path)  # Use Service to specify the chromedriver
 
     # Initialize the driver with the Service object
     driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    try:
+        driver.get(url)
+        # Your code for interacting with the page goes here
+    finally:
+        driver.quit()
+        # Clean up the temporary directory after the session ends
+        if os.path.exists(user_data_dir):
+            os.rmdir(user_data_dir)
 
     try:
         driver.get(url)
