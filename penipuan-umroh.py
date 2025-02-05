@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import tempfile
 import os
 
-MAX_CONCURRENT_SESSIONS = 20
+MAX_CONCURRENT_SESSIONS = 5
 semaphore = threading.Semaphore(MAX_CONCURRENT_SESSIONS)
 
 def submit_form_in_session(session_id, url):
