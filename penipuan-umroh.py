@@ -13,10 +13,12 @@ semaphore = threading.Semaphore(MAX_CONCURRENT_SESSIONS)
 def submit_form_in_session(session_id, url):
 
     chrome_options = Options()
-    chrome_options.add_argument('--headless')  
-    chrome_options.add_argument('--disable-gpu')  
+    chrome_options.add_argument('--headless')  # Run in headless mode
+    chrome_options.add_argument('--disable-gpu')  # Disable GPU acceleration
 
-    driver = webdriver.Chrome(options=chrome_options)
+    # Specify the path to chromedriver manually
+    driver_path = '/usr/bin/chromedriver'  # Update this if needed
+    driver = webdriver.Chrome(executable_path=driver_path, options=chrome_options)
 
     try:
         driver.get(url)
