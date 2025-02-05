@@ -1,5 +1,3 @@
-## pip install selenium
-
 import threading
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -9,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import tempfile
 import os
+import shutil
 
 MAX_CONCURRENT_SESSIONS = 20
 semaphore = threading.Semaphore(MAX_CONCURRENT_SESSIONS)
@@ -28,15 +27,6 @@ def submit_form_in_session(session_id, url):
 
     # Initialize the driver with the Service object
     driver = webdriver.Chrome(service=service, options=chrome_options)
-
-    try:
-        driver.get(url)
-        # Your code for interacting with the page goes here
-    finally:
-        driver.quit()
-        # Clean up the temporary directory after the session ends
-        if os.path.exists(user_data_dir):
-            os.rmdir(user_data_dir)
 
     try:
         driver.get(url)
@@ -70,28 +60,30 @@ def submit_form_in_session(session_id, url):
         else:
             print(f"Page did not change for session {session_id}, not closing the browser.")
 
+    except Exception as e:
+        print(f"An error occurred in session {session_id}: {e}")
+    
     finally:
         driver.quit()
+        # Clean up the temporary directory after the session ends
+        if os.path.exists(user_data_dir):
+            shutil.rmtree(user_data_dir)
 
         semaphore.release()
 
 def start_new_session(url, session_id):
     """This function will run in a thread and create a new session."""
-    semaphore.acquire()  
+    semaphore.acquire()
     submit_form_in_session(session_id, url)
 
     print(f"Session {session_id} completed, starting new session...")
-
-    start_new_session(url, session_id + 1)
 
 def main():
     url = 'https://news18-jade.vercel.app/umrohgratis?utm_medium=paid&utm_source=ig&utm_id=120215236218320774&utm_content=120215236218470774&utm_term=120215236218360774&utm_campaign=120215236218320774'
 
     session_id = 1
     while True:  
-
         threading.Thread(target=start_new_session, args=(url, session_id)).start()
-
         session_id += 1
 
 if __name__ == '__main__':
