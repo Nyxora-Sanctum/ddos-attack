@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-MAX_CONCURRENT_SESSIONS = 5
+MAX_CONCURRENT_SESSIONS = 20
 semaphore = threading.Semaphore(MAX_CONCURRENT_SESSIONS)
 
 def submit_form_in_session(session_id, url):
